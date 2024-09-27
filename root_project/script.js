@@ -7,7 +7,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // Fetch and load the GeoJSON data
-fetch('C:\\Users\\vandu\\OneDrive\\root_project\\your_shapefile.json')  // Path to your GeoJSON file
+fetch('your_shapefile.json')  // Path to your GeoJSON file
   .then(response => {
     if (!response.ok) {
       throw new Error('Network response was not ok ' + response.statusText);
