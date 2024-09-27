@@ -1,35 +1,27 @@
-// Initialize the map
+// Initialize the map centered at a specific location (latitude, longitude)
 var map = L.map('map').setView([21.0285, 105.8542], 10); // Example: Hanoi, Vietnam
 
-// Add OpenStreetMap base layer
+// Add OpenStreetMap tile layer
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// Add the OpenWeather precipitation layer
-var apiKey = '  var apiKey = '12118cdb333f0039947273d009989237';
-';  // Thay thế bằng OpenWeather API Key của bạn
+// Add OpenWeather rainfall layer using OpenWeatherMap API
+var apiKey = '12118cdb333f0039947273d009989237';  // Your OpenWeather API Key
 L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${apiKey}`, {
   attribution: 'Rainfall data © OpenWeatherMap',
   opacity: 0.7
 }).addTo(map);
-
-// Fetch and load the GeoJSON data
-fetch('./your_shapefile.json')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok ' + response.statusText);
+setInterval(function() {
+  map.eachLayer(function(layer) {
+    if (layer.options && layer.options.attribution === 'Rainfall data © OpenWeatherMap') {
+      map.removeLayer(layer); // Remove the old rainfall layer
     }
-    return response.json();
-  })
-  .then(data => {
-    // Add the GeoJSON layer to the map
-    L.geoJSON(data, {
-      style: function(feature) {
-        return {color: 'blue', fillOpacity: 0.5};  // Style options
-      }
-    }).addTo(map);
-  })
-  .catch(error => {
-    console.error('Error loading GeoJSON:', error);
   });
+  
+  // Add a new updated rainfall layer
+  L.tileLayer(`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${apiKey}`, {
+    attribution: 'Rainfall data © OpenWeatherMap',
+    opacity: 0.7
+  }).addTo(map);
+}, 300000); // Updates every 5 minutes
